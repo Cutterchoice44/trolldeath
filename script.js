@@ -293,6 +293,20 @@ if (rightEl && leftEl) {
 // 8) INITIALIZATION
 // ─────────────────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
+  // Inject script-based chat embed
+ const rcContainer = document.getElementById('radiocult-chat-container');
+const rcScript    = document.createElement('script');
+rcScript.src      = `https://app.radiocult.fm/embed/chat/${STATION_ID}.js?theme=midnight&primaryColor=%235A8785&corners=sharp`;
+rcScript.async    = true;
+rcContainer.appendChild(rcScript);
+
+// scrub logic…
+rcScript.onload = () => {
+  scrubTroll();
+  new MutationObserver(scrubTroll)
+    .observe(rcContainer, { childList: true, subtree: true });
+}
+
   // Core data inits
   fetchLiveNow();
   fetchWeeklySchedule();
@@ -353,22 +367,4 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     setTimeout(initBanCheck, 2000);
   }
-
-  // ────────────────────────────────────────────────────────────────────────────
-  // Troll-message scrubber
-  // ────────────────────────────────────────────────────────────────────────────
-  function scrubTrollMessages() {
-    document
-      .querySelectorAll('#radiocult-embed-container .rc-message')
-      .forEach(el => {
-        if (el.textContent.includes('logdumpoglpump')) {
-          el.remove();
-        }
-      });
-  }
-  // run once immediately…
-  scrubTrollMessages();
-  // …and then every 3 seconds to catch new posts
-  setInterval(scrubTrollMessages, 3000);
-
 });
