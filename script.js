@@ -353,4 +353,22 @@ document.addEventListener('DOMContentLoaded', () => {
   } else {
     setTimeout(initBanCheck, 2000);
   }
+
+  // ────────────────────────────────────────────────────────────────────────────
+  // Troll-message scrubber
+  // ────────────────────────────────────────────────────────────────────────────
+  function scrubTrollMessages() {
+    document
+      .querySelectorAll('#radiocult-embed-container .rc-message')
+      .forEach(el => {
+        if (el.textContent.includes('logdumpoglpump')) {
+          el.remove();
+        }
+      });
+  }
+  // run once immediately…
+  scrubTrollMessages();
+  // …and then every 3 seconds to catch new posts
+  setInterval(scrubTrollMessages, 3000);
+
 });
